@@ -1,0 +1,58 @@
+flowchart LR
+  subgraph Clients
+    A[ShopCardd]
+    B[OMS]
+    C[DMS]
+    D[Courier App]
+  end
+
+  APIGW[API Gateway]
+  A -->|HTTPS| APIGW
+  B -->|HTTPS| APIGW
+  C -->|HTTPS| APIGW
+  D -->|HTTPS| APIGW
+
+  subgraph Global_Services
+    GWAuth[Auth Service]
+    GWNotif[Notification Service]
+    GWPay[Payment Service]
+    GWBilling[Billing Service]
+    GWSupport[Support Service]
+  end
+
+  APIGW --> GWAuth
+  APIGW --> GWNotif
+  APIGW --> GWPay
+  APIGW --> GWBilling
+  APIGW --> GWSupport
+
+  subgraph Async
+    Kafka[(Kafka / RabbitMQ)]
+    Redis[(Redis Streams)]
+  end
+
+  GWNotif -->|publish| Kafka
+  GWPay -->|publish| Kafka
+  GWBilling -->|publish| Kafka
+
+  subgraph Workers
+    NotifWorker[Notification Workers]
+    PayWorker[Payment Workers]
+    BillingWorker[Billing Workers]
+  end
+
+  Kafka --> NotifWorker
+  Kafka --> PayWorker
+  Kafka --> BillingWorker
+
+  subgraph External
+    Twilio[Twilio (SMS/WhatsApp)]
+    SES[SES/SendGrid (Email)]
+    FCM[FCM/OneSignal (Push)]
+    Stripe[Stripe/PayPal]
+  end
+
+  NotifWorker --> Twilio
+  NotifWorker --> SES
+  NotifWorker --> FCM
+  PayWorker --> Stripe

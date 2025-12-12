@@ -1,0 +1,46 @@
+openapi: 3.0.0
+info:
+  title: Global Microservices API (subset)
+  version: 1.0.0
+paths:
+  /api/v1/notifications/send:
+    post:
+      summary: Send a notification
+      parameters:
+        - in: header
+          name: x-api-key
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                channel: { type: string }
+                recipient: { type: string }
+                template_id: { type: string }
+                payload: { type: object }
+                idempotency_key: { type: string }
+      responses:
+        '200':
+          description: queued
+  /api/v1/notifications/{id}:
+    get:
+      summary: Get notification status
+      parameters:
+        - in: header
+          name: x-api-key
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: notification

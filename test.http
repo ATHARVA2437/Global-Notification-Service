@@ -1,0 +1,10 @@
+POST http://localhost:8000/api/v1/notifications/send
+Content-Type: application/json
+x-api-key: dev-key-123
+
+{
+  "channel": "sms",
+  "recipient": "+919900000000",
+  "payload": {"code": "4321"},
+  "idempotency_key": "test-1"
+}
